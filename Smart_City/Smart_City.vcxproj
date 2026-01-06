@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{51b6ed2d-cfdb-48c0-9173-c34a3331bcbd}</ProjectGuid>
+    <RootNamespace>SmartCity</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)re;$(ProjectDir)utils</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)re;$(ProjectDir)utils</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)data_structures;$(ProjectDir)utils</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)data_structures;$(ProjectDir)utils</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="termgl\Termgl_Implementation.cpp" />
+    <ClCompile Include="termgl\Termgl_Video.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="data_structures\BST.h" />
+    <ClInclude Include="data_structures\CircularQueue.h" />
+    <ClInclude Include="data_structures\CustomSTL.h" />
+    <ClInclude Include="data_structures\HashTable.h" />
+    <ClInclude Include="data_structures\LinkedLists.h" />
+    <ClInclude Include="data_structures\NaryTree.h" />
+    <ClInclude Include="data_structures\PriorityQueue.h" />
+    <ClInclude Include="data_structures\Queue.h" />
+    <ClInclude Include="data_structures\Stack.h" />
+    <ClInclude Include="data_structures\Vector.h" />
+    <ClInclude Include="SmartCity.h" />
+    <ClInclude Include="source\CityGrid\CityGraph.h" />
+    <ClInclude Include="source\CityGrid\CityUtils.h" />
+    <ClInclude Include="source\CommercialSystem\CommercialManager.h" />
+    <ClInclude Include="source\CommercialSystem\Mall.h" />
+    <ClInclude Include="source\CommercialSystem\Product.h" />
+    <ClInclude Include="source\CommercialSystem\Shop.h" />
+    <ClInclude Include="source\HousingSystem\Citizen.h" />
+    <ClInclude Include="source\HousingSystem\HousingHierarchy.h" />
+    <ClInclude Include="source\HousingSystem\PopulationManager.h" />
+    <ClInclude Include="source\MedicalSystem\Doctor.h" />
+    <ClInclude Include="source\MedicalSystem\Hospital.h" />
+    <ClInclude Include="source\MedicalSystem\MedicalManager.h" />
+    <ClInclude Include="source\MedicalSystem\Medicine.h" />
+    <ClInclude Include="source\MedicalSystem\Patient.h" />
+    <ClInclude Include="source\MedicalSystem\Pharmacy.h" />
+    <ClInclude Include="source\SchoolSystem\Class.h" />
+    <ClInclude Include="source\SchoolSystem\Department.h" />
+    <ClInclude Include="source\SchoolSystem\Faculty.h" />
+    <ClInclude Include="source\SchoolSystem\School.h" />
+    <ClInclude Include="source\SchoolSystem\SchoolManager.h" />
+    <ClInclude Include="source\SchoolSystem\Student.h" />
+    <ClInclude Include="source\Simulator\AIManager.h" />
+    <ClInclude Include="source\Simulator\CityDatabaseView.h" />
+    <ClInclude Include="source\Simulator\CityEditorViews.h" />
+    <ClInclude Include="source\Simulator\CityManagement.h" />
+    <ClInclude Include="source\Simulator\CityManagementView.h" />
+    <ClInclude Include="source\Simulator\CitySearchEngineView.h" />
+    <ClInclude Include="source\Simulator\CitySimulator.h" />
+    <ClInclude Include="source\Simulator\CityGraphView.h" />
+    <ClInclude Include="source\TransportSystem\Ambulance.h" />
+    <ClInclude Include="source\TransportSystem\Bus.h" />
+    <ClInclude Include="source\TransportSystem\SchoolBus.h" />
+    <ClInclude Include="source\TransportSystem\TransportManager.h" />
+    <ClInclude Include="source\TransportSystem\Vehicle.h" />
+    <ClInclude Include="termgl\miniaudio.h" />
+    <ClInclude Include="termgl\stb_image.h" />
+    <ClInclude Include="termgl\Termgl.h" />
+    <ClInclude Include="termgl\Termgl_Defs.h" />
+    <ClInclude Include="termgl\Termgl_Video.h" />
+    <ClInclude Include="utils\Coordinate.h" />
+    <ClInclude Include="utils\ID_Generator.h" />
+    <ClInclude Include="utils\Location.h" />
+    <ClInclude Include="utils\ModuleUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dataset\ambulances.csv" />
+    <None Include="dataset\buses.csv" />
+    <None Include="dataset\hospitals.csv" />
+    <None Include="dataset\malls.csv" />
+    <None Include="dataset\pharmacies.csv" />
+    <None Include="dataset\population.csv" />
+    <None Include="dataset\schoolbuses.csv" />
+    <None Include="dataset\schools.csv" />
+    <None Include="dataset\shops.csv" />
+    <None Include="dataset\stops.csv" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

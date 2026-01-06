@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Custom_DS">
+      <UniqueIdentifier>{418e2535-309d-48a9-940d-ac5942fa0c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{c4aef990-b875-4592-9cb6-58d408bf7602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules">
+      <UniqueIdentifier>{d31dab84-e4da-4b7d-88b7-6553eec463cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\City Map">
+      <UniqueIdentifier>{35157dde-c229-4137-aac8-e403c2c47f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FTXUI">
+      <UniqueIdentifier>{3dc44205-3dcd-430e-b36b-281372dd91dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\SchoolSystem">
+      <UniqueIdentifier>{6e43646e-fba7-4148-8565-7e0a5ebb0857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\MedicalSystem">
+      <UniqueIdentifier>{e0570fea-2905-4b5c-a806-b87e9e2f589d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\HousingSystem">
+      <UniqueIdentifier>{7829994f-76a9-45c1-8c68-776e36be8f44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\CommercialSystem">
+      <UniqueIdentifier>{6e08117a-7048-455e-8f99-6356a0f61be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\TransportSystem">
+      <UniqueIdentifier>{c67ffa9b-f981-4764-92f6-4f10958a788a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\Graphics">
+      <UniqueIdentifier>{e2c47095-fe2c-4597-b3d6-25147f530d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Modules\Simulation">
+      <UniqueIdentifier>{002dc65f-bf60-484c-b369-9f40847646d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils\Coordinate.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ModuleUtils.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Location.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ID_Generator.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\HashTable.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\Vector.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\BST.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\CustomSTL.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\LinkedLists.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\NaryTree.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\PriorityQueue.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\Queue.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\Stack.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\Class.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\Department.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\Faculty.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\School.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\SchoolManager.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SchoolSystem\Student.h">
+      <Filter>Header Files\Modules\SchoolSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\Doctor.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\Hospital.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\MedicalManager.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\Patient.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\Pharmacy.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\HousingSystem\Citizen.h">
+      <Filter>Header Files\Modules\HousingSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\HousingSystem\HousingHierarchy.h">
+      <Filter>Header Files\Modules\HousingSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\HousingSystem\PopulationManager.h">
+      <Filter>Header Files\Modules\HousingSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MedicalSystem\Medicine.h">
+      <Filter>Header Files\Modules\MedicalSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CommercialSystem\CommercialManager.h">
+      <Filter>Header Files\Modules\CommercialSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CommercialSystem\Mall.h">
+      <Filter>Header Files\Modules\CommercialSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CommercialSystem\Product.h">
+      <Filter>Header Files\Modules\CommercialSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CommercialSystem\Shop.h">
+      <Filter>Header Files\Modules\CommercialSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structures\CircularQueue.h">
+      <Filter>Header Files\Custom_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TransportSystem\Ambulance.h">
+      <Filter>Header Files\Modules\TransportSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TransportSystem\SchoolBus.h">
+      <Filter>Header Files\Modules\TransportSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TransportSystem\Vehicle.h">
+      <Filter>Header Files\Modules\TransportSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TransportSystem\TransportManager.h">
+      <Filter>Header Files\Modules\TransportSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\TransportSystem\Bus.h">
+      <Filter>Header Files\Modules\TransportSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CityGrid\CityGraph.h">
+      <Filter>Header Files\City Map</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CityGrid\CityUtils.h">
+      <Filter>Header Files\City Map</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartCity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termgl\Termgl_Defs.h">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="termgl\Termgl.h">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="termgl\stb_image.h">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CityDatabaseView.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CityEditorViews.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CityManagement.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CityManagementView.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CitySearchEngineView.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CitySimulator.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\CityGraphView.h">
+      <Filter>Header Files\Modules\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="termgl\Termgl_Video.h">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="termgl\miniaudio.h">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Simulator\AIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dataset\buses.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\hospitals.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\pharmacies.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\population.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\schools.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\stops.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\malls.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\shops.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="dataset\ambulances.csv" />
+    <None Include="dataset\schoolbuses.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="termgl\Termgl_Implementation.cpp">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="termgl\Termgl_Video.cpp">
+      <Filter>Header Files\Modules\Graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
