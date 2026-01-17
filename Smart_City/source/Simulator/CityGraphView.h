@@ -1427,6 +1427,10 @@ public:
         buildGraphVisualization();
         buildSelectableNodesList();
 
+        if (!showRealVehicles) {
+            initializeTraffic();
+        }
+
         termgl::Window window(1600, 900, "Islamabad City Simulator - Interactive Map", true);
         window.setFramerateLimit(60);
 
@@ -1451,9 +1455,8 @@ public:
 
         viewport.setCanvasSize((int)(width * 0.75), height);
 
-        // Simulation timing: 1 real second = 1 simulation minute
         int simulationFrameCounter = 0;
-        const int framesPerSimulationTick = 300;  // At 60 FPS, tick once per second
+        const int framesPerSimulationTick = 20; // 3 ticks per second
 
         while (running && window.processEvents()) {
             if (window.isKeyPressed(VK_ESCAPE)) {
@@ -1471,7 +1474,6 @@ public:
                 }
             }
 
-            // INPUT HANDLING
             window.setActivePartition(mapPartition);
             termgl::Vec2 mousePos = window.getMousePos();
 
@@ -1502,7 +1504,6 @@ public:
                 }
             }
 
-            // Zooming
             int scroll = window.getMouseScrollDelta();
             if (scroll > 0) viewport.zoomIn();
             if (scroll < 0) viewport.zoomOut();
@@ -1514,22 +1515,22 @@ public:
 
             updateHoverState(mousePos.x, mousePos.y);
 
-            // Handle clicks - check vehicles/citizens first (God Mode), then nodes
+            // Click Logic
             if (clickDetected) {
-                // Check for vehicle click
+                // 1. Check Vehicles (God Mode)
                 int vehicleHit = hitTestVehicle(mousePos.x, mousePos.y);
                 if (vehicleHit >= 0) {
                     selectedVehicleIndex = (selectedVehicleIndex == vehicleHit) ? -1 : vehicleHit;
                     selectedCitizenIndex = -1;
                 }
-                // Check for citizen click
                 else {
+                    // 2. Check Citizens (God Mode)
                     int citizenHit = hitTestCitizen(mousePos.x, mousePos.y);
                     if (citizenHit >= 0) {
                         selectedCitizenIndex = (selectedCitizenIndex == citizenHit) ? -1 : citizenHit;
                         selectedVehicleIndex = -1;
                     }
-                    // Check for node click (Dijkstra mode)
+                    // 3. Check Nodes (Dijkstra)
                     else if (hoveredNodeID != -1 && inDijkstraMode) {
                         if (dijkstraMode == DijkstraMode::SELECT_START) {
                             dijkstraStartNode = hoveredNodeID;
@@ -1537,8 +1538,8 @@ public:
                             if (idx >= 0) graphNodes[idx].isStart = true;
                             dijkstraMode = DijkstraMode::SELECT_TARGET_TYPE;
                         }
-                        else if (dijkstraMode == DijkstraMode::SELECT_TARGET_TYPE || 
-                                 dijkstraMode == DijkstraMode::RUNNING) {
+                        else if (dijkstraMode == DijkstraMode::SELECT_TARGET_TYPE ||
+                            dijkstraMode == DijkstraMode::RUNNING) {
                             dijkstraEndNode = hoveredNodeID;
                             dijkstraTargetType = "CUSTOM";
                             runDijkstraPointToPoint();
@@ -1548,23 +1549,29 @@ public:
                 }
             }
 
-            // ==================== SIMULATION UPDATE ====================
-            // Timing: 1 real second = 1 simulation minute (tick every 60 frames at 60 FPS)
+            // Simulation Update Loop
             if (!trafficPaused && city) {
                 simulationFrameCounter++;
-                
+
                 if (useAgentSimulation && simulationFrameCounter >= framesPerSimulationTick) {
-                    // Run the full city simulation (AIManager + Transport + Traffic)
-                    city->runSimulation();
+                    city->enableAgentSimulation(true);
+                    city->runSimulation(); // Runs AI + Transport + Time
+                    if (city->getCityGraph()) {
+                        city->getCityGraph()->updateTrafficWeights();
+                    }
                     simulationFrameCounter = 0;
                 }
-                
-                // Sync visualization with simulation state (every frame for smooth rendering)
-                syncRealVehicles();
-                syncCitizens();
+
+                if (showRealVehicles) {
+                    syncRealVehicles();
+                    syncCitizens();
+                }
+                else {
+                    updateTraffic();
+                }
             }
 
-            // RENDERING
+            // Draw
             window.setActivePartition(-1);
             window.clear(termgl::Color(0, 0, 0));
             window.drawPartitionFrames();
@@ -1573,7 +1580,6 @@ public:
             window.clear(termgl::Color(10, 10, 15));
             renderGraph(window);
 
-            // SIDE PANEL
             window.setActivePartition(sidePartition);
             window.clear(termgl::Color(0, 0, 0));
 
@@ -1586,12 +1592,15 @@ public:
                 string text = (state ? "[ON] " : "[OFF] ") + label;
                 if (window.drawButton(bx, by, (panelW - 30) / 2, 30, text)) {
                     state = !state;
-                    // Sync agent simulation with SmartCity
+                    if (&state == &showRealVehicles) {
+                        if (!showRealVehicles) initializeTraffic();
+                        else trafficVehicles.clear();
+                    }
                     if (&state == &useAgentSimulation && city) {
                         city->enableAgentSimulation(useAgentSimulation);
                     }
                 }
-            };
+                };
 
             int col1 = 10;
             int col2 = 10 + (panelW - 30) / 2 + 10;
@@ -1602,34 +1611,34 @@ public:
             drawToggleBtn("Sectors", showSectorBounds, col1, cy);
             drawToggleBtn("Houses", showHouses, col2, cy); cy += 40;
 
-            drawToggleBtn("Heatmap", showCongestionHeatmap, col1, cy);
+            drawToggleBtn("Traffic", showTraffic, col1, cy);
             drawToggleBtn("Pause", trafficPaused, col2, cy); cy += 40;
 
-            drawToggleBtn("Vehicles", showRealVehicles, col1, cy);
-            drawToggleBtn("Citizens", showCitizens, col2, cy); cy += 40;
+            drawToggleBtn("Heatmap", showCongestionHeatmap, col1, cy);
+            drawToggleBtn("Vehicles", showRealVehicles, col2, cy); cy += 40;
 
-            drawToggleBtn("Agent Sim", useAgentSimulation, col1, cy); cy += 40;
+            drawToggleBtn("Citizens", showCitizens, col1, cy);
+            drawToggleBtn("Agent Sim", useAgentSimulation, col2, cy); cy += 40;
 
-            // Simulation stats
+            // Stats
             if (city) {
                 std::stringstream timeSS;
-                timeSS << "Time: " << std::setfill('0') << std::setw(2) << city->getSimulationHour() 
-                       << ":" << std::setfill('0') << std::setw(2) << city->getSimulationMinute();
+                timeSS << "Time: " << std::setfill('0') << std::setw(2) << city->getSimulationHour()
+                    << ":" << std::setfill('0') << std::setw(2) << city->getSimulationMinute();
                 window.drawText(10, cy, timeSS.str(), termgl::Color::Yellow()); cy += 20;
-                
+
                 window.drawText(10, cy, "Walking: " + std::to_string(city->getWalkingCitizenCount()), termgl::Color::Grey()); cy += 18;
                 window.drawText(10, cy, "Waiting: " + std::to_string(city->getWaitingCitizenCount()), termgl::Color::Grey()); cy += 18;
-                window.drawText(10, cy, "Commuting: " + std::to_string(city->getCommutingCitizenCount()), termgl::Color::Grey()); cy += 18;
                 window.drawText(10, cy, "Vehicles: " + std::to_string(city->getTotalVehiclesOnRoads()), termgl::Color::Grey()); cy += 25;
             }
-            
-            // Zoom info
+
+            // Zoom
             std::stringstream zoomSS;
             zoomSS << "Zoom: " << std::fixed << std::setprecision(1) << viewport.getZoom() << "x";
             window.drawText(10, cy, zoomSS.str(), termgl::Color::Grey()); cy += 25;
 
+            // Pathfinding UI
             window.drawText(10, cy, "PATHFINDING", termgl::Color::Green()); cy += 30;
-
             if (!inDijkstraMode) {
                 if (window.drawButton(10, cy, panelW - 20, 35, "Start Navigation")) {
                     inDijkstraMode = true;
@@ -1646,67 +1655,50 @@ public:
                     clearDijkstraVisualization();
                 }
                 cy += 45;
-
                 if (dijkstraMode == DijkstraMode::SELECT_START) {
-                    window.drawText(10, cy, "STEP 1: Select Start", termgl::Color::Yellow()); cy += 20;
-                    window.drawText(10, cy, "Click a node on map", termgl::Color::Grey()); cy += 25;
+                    window.drawText(10, cy, "STEP 1: Select Start", termgl::Color::Yellow());
                 }
                 else if (dijkstraMode == DijkstraMode::SELECT_TARGET_TYPE) {
-                    window.drawText(10, cy, "STEP 2: Select Destination", termgl::Color::Yellow()); cy += 20;
-                    window.drawText(10, cy, "Click node OR select type:", termgl::Color::Grey()); cy += 25;
-
+                    window.drawText(10, cy, "STEP 2: Destination", termgl::Color::Yellow());
+                    // ... (Target selection list logic preserved from previous) ...
                     for (size_t i = 0; i < targetTypes.size(); i++) {
                         termgl::Color c = (i == targetSel) ? termgl::Color::Green() : termgl::Color::White();
                         string prefix = (i == targetSel) ? "> " : "  ";
-                        window.drawText(10, cy, prefix + targetTypes[i], c);
-                        cy += 25;
+                        window.drawText(10, cy + 25 + (int)i * 25, prefix + targetTypes[i], c);
                     }
                     if (window.isKeyPressed(VK_UP) && targetSel > 0) targetSel--;
                     if (window.isKeyPressed(VK_DOWN) && targetSel < (int)targetTypes.size() - 1) targetSel++;
                     if (window.isKeyPressed(VK_RETURN)) {
-                        if (targetSel == 4) {
-                            dijkstraTargetType = "CUSTOM";
-                            dijkstraMode = DijkstraMode::RUNNING;
-                        }
+                        if (targetSel == 4) { dijkstraTargetType = "CUSTOM"; dijkstraMode = DijkstraMode::RUNNING; }
                         else {
                             if (targetSel == 0) dijkstraTargetType = "SCHOOL";
                             else if (targetSel == 1) dijkstraTargetType = "HOSPITAL";
                             else if (targetSel == 2) dijkstraTargetType = "PHARMACY";
                             else dijkstraTargetType = "STOP";
-                            runDijkstraAlgorithm();
-                            dijkstraMode = DijkstraMode::COMPLETE;
+                            runDijkstraAlgorithm(); dijkstraMode = DijkstraMode::COMPLETE;
                         }
                     }
                 }
                 else if (dijkstraMode == DijkstraMode::COMPLETE) {
-                    if (dijkstraPath.getSize() > 0) {
-                        window.drawText(10, cy, "ROUTE FOUND", termgl::Color::Green()); cy += 30;
-                        std::stringstream distSS;
-                        distSS << "Distance: " << std::fixed << std::setprecision(2) << dijkstraDistance << " km";
-                        window.drawText(10, cy, distSS.str(), termgl::Color::White()); cy += 25;
-                        window.drawText(10, cy, "Stops: " + std::to_string(dijkstraPath.getSize()), termgl::Color::White()); cy += 35;
-                    }
-                    else {
-                        window.drawText(10, cy, "NO PATH FOUND", termgl::Color::Red()); cy += 35;
-                    }
-                    if (window.drawButton(10, cy, panelW - 20, 30, "Reset Path")) {
-                        clearDijkstraVisualization();
-                        dijkstraMode = DijkstraMode::SELECT_START;
+                    if (dijkstraPath.getSize() > 0) window.drawText(10, cy, "ROUTE FOUND", termgl::Color::Green());
+                    else window.drawText(10, cy, "NO PATH", termgl::Color::Red());
+                    if (window.drawButton(10, cy + 60, panelW - 20, 30, "Reset")) {
+                        clearDijkstraVisualization(); dijkstraMode = DijkstraMode::SELECT_START;
                     }
                 }
             }
 
-            // Info panel - show selected agent info
+            // Info Panel
             cy = window.getHeight() - 150;
             window.drawRect(5, cy, panelW - 10, 140, termgl::Color(40, 40, 40));
             window.drawText(12, cy + 10, "INFO:", termgl::Color::Yellow());
-            
+
             if (selectedVehicleIndex >= 0 && selectedVehicleIndex < trafficVehicles.getSize()) {
                 const TrafficVehicle& v = trafficVehicles[selectedVehicleIndex];
                 window.drawText(12, cy + 30, "Vehicle: " + v.vehicleID, termgl::Color::Cyan());
-                window.drawText(12, cy + 50, v.isBus ? "Type: Bus" : "Type: Vehicle", termgl::Color::White());
-                window.drawText(12, cy + 70, v.isStuck ? "Status: STUCK!" : "Status: Moving", 
-                               v.isStuck ? termgl::Color::Red() : termgl::Color::Green());
+                window.drawText(12, cy + 50, v.isBus ? "Type: Bus" : (v.isReal ? "Type: Rickshaw/Car" : "Type: Fake"), termgl::Color::White());
+                window.drawText(12, cy + 70, v.isStuck ? "Status: STUCK!" : "Status: Moving",
+                    v.isStuck ? termgl::Color::Red() : termgl::Color::Green());
             }
             else if (selectedCitizenIndex >= 0 && selectedCitizenIndex < citizenRenderList.getSize()) {
                 const CitizenRenderData& c = citizenRenderList[selectedCitizenIndex];

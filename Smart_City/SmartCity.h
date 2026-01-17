@@ -1,28 +1,6 @@
 /*
  * ============================================================================
- * SMART CITY MANAGEMENT SYSTEM 
- * ============================================================================
- *
- * This class serves as the central hub connecting all city subsystems:
- *   - CityGraph: Graph-based infrastructure (Adjacency List + Dijkstra)
- *   - SchoolManager: Education system (School Tree hierarchy)
- *   - TransportManager: Full transport system (Buses, School Buses, Ambulances)
- *   - PopulationManager: Housing system (N-ary Tree: Sector->Street->House->Citizen)
- *   - MedicalManager: Healthcare system (Hospital + Pharmacy with Priority Queue)
- *   - CommercialManager: Commercial system (Mall->Shop->Product with Hash lookup)
- *   - AIManager: Agent-based simulation brain (Needs, Decisions, Pathfinding)
- *
- * Data Structures Used:
- *   - Graph (Adjacency List) with weighted edges
- *   - Dijkstra's Shortest Path Algorithm
- *   - N-ary Tree for Population/Housing hierarchy
- *   - School Tree (School -> Department -> Class) 3-level hierarchy
- *   - Hash Tables with separate chaining for O(1) lookups
- *   - Priority Queue (Min-Heap) for Hospital ER and Patient Transfer Dispatch
- *   - Stack for Travel History
- *   - Circular Queue for Passenger simulation at bus stops
- *   - Singly Linked List for Bus/SchoolBus/Ambulance route management
- *
+ * SMART CITY MANAGEMENT SYSTEM
  * ============================================================================
  */
 
@@ -70,6 +48,9 @@ private:
     // ========== STATE FLAGS ==========
     bool cityInitialized;
     bool agentSimulationEnabled;
+
+    // ========== HELPER METHODS ==========
+    void linkPopulationToGraph(); // The "Keystone" function
 
 public:
     SmartCity();
@@ -140,16 +121,16 @@ public:
     Vector<SchoolBus*> getSchoolBusesBySchool(const string& schoolID);
     Vector<SchoolBus*> getSchoolBusesInSector(const string& sector);
     SchoolBus* findSchoolBusForRoute(const string& fromSector, const string& toSector);
-    
+
     // School Bus Home Pickup APIs
     void createStudentPickupPoint(int nodeID, const string& sector, const string& locationName);
     bool addStudentToPickup(int pickupNodeID, const string& cnic, const string& name,
-                            const string& destinationSchoolID, int destinationNodeID);
+        const string& destinationSchoolID, int destinationNodeID);
     bool setupSchoolBusRoute(const string& busID, const Vector<int>& pickupNodes,
-                             int schoolNodeID, const string& schoolID);
+        int schoolNodeID, const string& schoolID);
     bool dispatchSchoolBusForPickups(const string& busID);
     int getStudentsWaitingAtPickup(int nodeID);
-    
+
     void generatePickupPointsForSector(const string& sector);
 
     // ========== AMBULANCE/PATIENT TRANSFER APIs ==========
@@ -199,21 +180,21 @@ public:
     int getTravelHistorySize() const { return travelHistory.size(); }
 
     // ========== COMPREHENSIVE SIMULATION ==========
-    
+
     void runSimulation();
     void runSimulation(int steps);
     void startSimulation();
     void stopSimulation();
     bool isSimulationRunning() const;
     int getSimulationTick() const;
-    
-    // Legacy simulation methods (for backward compatibility)
+
+    // Legacy simulation methods
     void simulateStep();
     void processBusArrivals();
     void processSchoolBuses();
     void updateAmbulances();
 
-    // ========== SECTOR/NODE QUERIES ==========
+    // ========== SECTOR QUERIES ==========
     Vector<CityNode*> getNodesInSector(const string& sectorName) const;
     Vector<CityNode*> getSchoolsInSector(const string& sectorName) const;
     Vector<CityNode*> getHospitalsInSector(const string& sectorName) const;
@@ -285,9 +266,8 @@ inline bool SmartCity::initialize() {
 
     if (cityInitialized) return true;
 
-
     cityGraph = new CityGraph();
-    //All sectors are initialized from the very start
+    // All sectors are initialized from the very start
     for (int i = 0; i < SECTOR_COUNT; i++) {
         cityGraph->initializeSectorFrame(SECTOR_GRID[i].name);
     }
@@ -322,26 +302,79 @@ inline bool SmartCity::initialize() {
 
     populationManager->loadPopulation(populationCSV);
 
-    
     for (int i = 0; i < SECTOR_COUNT; i++) {
         generatePickupPointsForSector(SECTOR_GRID[i].name);
     }
-    
+
     commercialManager->loadMalls(mallsCSV);
     commercialManager->loadShops(shopsCSV);
-	cityGraph->loadBuildingsCSV(mallsCSV, "MALL");
+    cityGraph->loadBuildingsCSV(mallsCSV, "MALL");
+
+    // ====================================================================
+    // KEYSTONE FIX: PHYSICALIZE THE POPULATION
+    // ====================================================================
+    linkPopulationToGraph();
+
+    // Spawn Rickshaws for Feeder Transport
+    transportManager->spawnRickshaws(50); // Ensure Rickshaws exist!
 
     // Initialize AI Manager (The Brain)
     aiManager = new AIManager(cityGraph, populationManager, transportManager);
 
-    // Spawn rickshaws (feeder vehicles) for citizen pickup
-    transportManager->spawnRickshaws(50);
-
-    // Enable agent simulation by default
-    agentSimulationEnabled = true;
-
     cityInitialized = true;
     return true;
+}
+
+// ==================== POPULATION LINKER (THE BRIDGE) ====================
+
+inline void SmartCity::linkPopulationToGraph() {
+    if (!populationManager || !cityGraph) return;
+
+    Vector<Citizen*>& citizens = populationManager->masterList;
+
+    for (int i = 0; i < citizens.getSize(); i++) {
+        Citizen* c = citizens[i];
+        if (!c) continue;
+
+        // 1. Assign Home Node
+        string houseID = "H-" + c->sector + "-S" + std::to_string(c->street) + "-N" + std::to_string(c->houseNo);
+        int homeNodeID = cityGraph->getIDByDatabaseID(houseID);
+
+        if (homeNodeID == -1) {
+            // Procedurally create house node
+            double lat, lon;
+            // Use sector name to generate rough coords, then jitter by street/house
+            GeometryUtils::generateCoords(c->sector, lat, lon);
+
+            // Jitter logic for street/house
+            double jitter = ((c->street * 10 + c->houseNo) % 100) * 0.0001;
+            lat += jitter;
+            lon -= jitter;
+
+            homeNodeID = cityGraph->addLocation(houseID, "", "House " + std::to_string(c->houseNo),
+                "HOUSE", lat, lon);
+        }
+
+        if (homeNodeID != -1) {
+            c->homeNodeID = homeNodeID;
+            c->currentNodeID = homeNodeID;
+        }
+
+        // 2. Assign Work/School Node
+        if (c->age < 18 || c->occupation == "Student") {
+            int schoolNode = cityGraph->findNearestFacility(homeNodeID, "SCHOOL");
+            if (schoolNode != -1) c->schoolNodeID = schoolNode;
+        }
+        else {
+            string jobType = "MALL";
+            if (c->occupation == "Doctor") jobType = "HOSPITAL";
+            else if (c->occupation == "Teacher") jobType = "SCHOOL";
+            else if (c->occupation == "Engineer") jobType = "STOP"; // Commute to office
+
+            int workNode = cityGraph->findNearestFacility(homeNodeID, jobType);
+            if (workNode != -1) c->workplaceNodeID = workNode;
+        }
+    }
 }
 
 // ========== AGENT SIMULATION CONTROL ==========
@@ -576,14 +609,14 @@ inline void SmartCity::createStudentPickupPoint(int nodeID, const string& sector
 }
 
 inline bool SmartCity::addStudentToPickup(int pickupNodeID, const string& cnic, const string& name,
-                                          const string& destinationSchoolID, int destinationNodeID) {
+    const string& destinationSchoolID, int destinationNodeID) {
     if (!cityInitialized) return false;
     StudentPassenger student(cnic, name, "", destinationSchoolID, pickupNodeID, destinationNodeID, true);
     return transportManager->addStudentToPickupPoint(pickupNodeID, student);
 }
 
 inline bool SmartCity::setupSchoolBusRoute(const string& busID, const Vector<int>& pickupNodes,
-                                           int schoolNodeID, const string& schoolID) {
+    int schoolNodeID, const string& schoolID) {
     if (!cityInitialized) return false;
     return transportManager->setupSchoolBusHomeRoute(busID, pickupNodes, schoolNodeID, schoolID);
 }
@@ -600,7 +633,7 @@ inline int SmartCity::getStudentsWaitingAtPickup(int nodeID) {
 
 inline void SmartCity::generatePickupPointsForSector(const string& sector) {
     if (!cityInitialized) return;
-    
+
     for (int i = 0; i < cityGraph->getNodeCount(); i++) {
         CityNode* node = cityGraph->getNode(i);
         if (node && node->sector == sector) {
@@ -805,22 +838,22 @@ inline bool SmartCity::undoLastTravel() {
 
 inline void SmartCity::runSimulation() {
     if (!cityInitialized) return;
-    
+
     simulationTick++;
-    
+
     // 1. Update traffic weights based on current road loads
     cityGraph->updateTrafficWeights();
-    
+
     // 2. Run agent AI (citizen decisions and movement)
     if (agentSimulationEnabled && aiManager) {
         aiManager->updateCitizens(1.0);  // 1 tick of time
-        
+
         // Advance simulation time (1 tick = 1 minute)
         if (simulationTick % 1 == 0) {
             aiManager->advanceTime(1);
         }
     }
-    
+
     // 3. Run transport simulation
     transportManager->runSimulation();
 }
